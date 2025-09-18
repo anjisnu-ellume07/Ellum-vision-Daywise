@@ -45,3 +45,4 @@ gunicorn
 pymongo
 dnspython
 flask-paginate
+dotenv
