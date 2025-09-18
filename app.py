@@ -30,9 +30,17 @@ from pymongo import MongoClient
 from bson import ObjectId
 import gridfs
 from bson.json_util import dumps, loads
+from dotenv import load_dotenv
+import os
 
+# Load environment variables from .env
+load_dotenv()
+
+# Access the variables
+mongo_uri = os.getenv("MONGO_URI")
+grok3_api_key = os.getenv("GROK_API_KEY")
 # MongoDB Configuration
-MONGODB_URI = "mongodb+srv://anjisnu_roy:wJMuu3bIhS0wqh4z@ellume.ck3yo.mongodb.net/ellume?retryWrites=true&w=majority"
+MONGODB_URI = mongo_uri
 DB_NAME = "solar"
 COLLECTION_NAME = "ellume_vision"
 
@@ -324,7 +332,7 @@ class GroqAnalyzer:
     """Integration with Grok API for detailed anomaly analysis"""
     
     def __init__(self, api_key):
-        self.api_key = "xai-ToljOndmpxQPLxhjlGYCTmseo1Knzg7er11CU0kACdn6YIZOTwMSbPcBAAQS6cl99JN0dhFngKaUaGoE"
+        self.api_key = grok3_api_key
         self.base_url = "https://api.x.ai/v1/chat/completions"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -1281,7 +1289,7 @@ def index():
             # Initialize detector with hardcoded model
             detector = SolarAnomalyDetector(
                 contamination=form.contamination.data,
-                groq_api_key="xai-ToljOndmpxQPLxhjlGYCTmseo1Knzg7er11CU0kACdn6YIZOTwMSbPcBAAQS6cl99JN0dhFngKaUaGoE"
+                groq_api_key=grok3_api_key
             )
             
             # Preprocess data
@@ -1524,7 +1532,7 @@ def api_analyze():
         # Initialize detector
         detector = SolarAnomalyDetector(
             contamination=data.get('contamination', 0.05),
-            groq_api_key="xai-ToljOndmpxQPLxhjlGYCTmseo1Knzg7er11CU0kACdn6YIZOTwMSbPcBAAQS6cl99JN0dhFngKaUaGoE"
+            groq_api_key=grok3_api_key
         )
         
         # Preprocess and predict
@@ -1588,4 +1596,4 @@ def get_results(document_id):
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5010)
+    app.run(debug=True, host='0.0.0.0', port=5000)
